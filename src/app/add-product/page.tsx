@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import prisma from "@/lib/db/prisma";
 import { redirect } from "next/navigation";
+import FormSubmitButton from "@/components/FormSubmitButton";
 
 export const metadata: Metadata = {
   title: "Add Product",
@@ -59,9 +60,7 @@ const page = () => {
           required
           className="input input-bordered mb-3 w-full"
         />
-        <button className="btn btn-primary btn-block" type="submit">
-          Add Product
-        </button>
+        <FormSubmitButton className="btn-block">Add Product</FormSubmitButton>
       </form>
     </div>
   );
