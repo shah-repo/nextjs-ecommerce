@@ -1,22 +1,41 @@
 import PriceTag from "@/components/PriceTag";
 import prisma from "@/lib/db/prisma";
+import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import React from "react";
+import React, { cache } from "react";
 
 interface ProductPageProps {
   params: {
     id: string;
   };
 }
-export default async function ProductPage({
-  params: { id },
-}: ProductPageProps) {
-  const product = await prisma.product.findUnique({ where: { id } });
 
+export const getProduct = cache(async (id: string) => {
+  const product = await prisma.product.findUnique({ where: { id } });
   if (!product) {
     return notFound();
   }
+  return product;
+});
+
+export async function generateMetadata({
+  params: { id },
+}: ProductPageProps): Promise<Metadata> {
+  const product = await getProduct(id);
+  return {
+    title: product.name + " - Flowmazon",
+    description: product.description,
+    openGraph: {
+      images: [{ url: product.url }],
+    },
+  };
+}
+
+export default async function ProductPage({
+  params: { id },
+}: ProductPageProps) {
+  const product = await getProduct(id);
   const isNew =
     Date.now() - new Date(product.createdAt).getTime() <
     1000 * 60 * 60 * 24 * 7;
