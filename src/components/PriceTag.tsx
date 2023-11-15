@@ -1,4 +1,4 @@
-import { formatCurrency } from "@/lib/db/format";
+import { formatCurrency } from "@/lib/format";
 import React from "react";
 
 interface PriceTagProps {
