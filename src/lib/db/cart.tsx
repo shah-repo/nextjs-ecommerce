@@ -106,13 +106,26 @@ export async function mergeAnonymousCartWithUserCart(userId: string) {
       // Now delete user cart items
       await tx.cartItem.deleteMany({ where: { cartId: userCart.id } });
       // Now create new merged cart items
-      await tx.cartItem.createMany({
-        data: mergedCartItems.map((cartItem) => ({
-          cartId: userCart.id,
-          productId: cartItem.productId,
-          quantity: cartItem.quantity,
-        })),
+      await tx.cart.update({
+        where: { id: userCart.id },
+        data: {
+          items: {
+            createMany: {
+              data: mergedCartItems.map((cartItem) => ({
+                productId: cartItem.productId,
+                quantity: cartItem.quantity,
+              })),
+            },
+          },
+        },
       });
+      // await tx.cartItem.createMany({
+      //   data: mergedCartItems.map((cartItem) => ({
+      //     cartId: userCart.id,
+      //     productId: cartItem.productId,
+      //     quantity: cartItem.quantity,
+      //   })),
+      // });
     } else {
       await tx.cart.create({
         data: {
