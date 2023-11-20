@@ -13,7 +13,7 @@ interface ProductPageProps {
   };
 }
 
-export const getProduct = cache(async (id: string) => {
+const getProduct = cache(async (id: string) => {
   const product = await prisma.product.findUnique({ where: { id } });
   if (!product) {
     return notFound();
