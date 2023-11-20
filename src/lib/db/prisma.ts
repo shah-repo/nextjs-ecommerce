@@ -10,8 +10,18 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClientSingleton | undefined;
 };
 
-const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
-
+const prismaBase = globalForPrisma.prisma ?? prismaClientSingleton();
+const prisma = prismaBase.$extends({
+  query: {
+    cart: {
+      // args contain the actual body or the data we are passing for update
+      async update({ args, query }) {
+        args.data = { ...args.data, updatedAt: new Date() };
+        return query(args);
+      },
+    },
+  },
+});
 export default prisma;
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prismaBase;

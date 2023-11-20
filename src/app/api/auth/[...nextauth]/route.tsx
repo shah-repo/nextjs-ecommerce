@@ -2,6 +2,7 @@ import { mergeAnonymousCartWithUserCart } from "@/lib/db/cart";
 import prisma from "@/lib/db/prisma";
 import { env } from "@/lib/env";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
@@ -9,7 +10,7 @@ import GoogleProvider from "next-auth/providers/google";
 export const nextAuthOptions: NextAuthOptions = {
   // PrismaAdapter allow to save user info and session data in mongodb using prisma
   // this works togther very well
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma as PrismaClient),
   // Can add multiple providers
   providers: [
     GoogleProvider({
